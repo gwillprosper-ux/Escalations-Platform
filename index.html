@@ -39,7 +39,6 @@ p {
     color: #555;
 }
 
-/* INPUTS */
 input {
     width: 100%;
     padding: 12px;
@@ -50,7 +49,6 @@ input {
     font-size: 14px;
 }
 
-/* BUTTON */
 button {
     width: 100%;
     padding: 12px;
@@ -66,7 +64,6 @@ button:hover {
     background: #ffb347;
 }
 
-/* LINKS */
 .link {
     margin-top: 10px;
     font-size: 13px;
@@ -126,7 +123,7 @@ button:hover {
 
 <script>
 
-// ---------------- SWITCH VIEWS ----------------
+// ---------------- VIEW SWITCH ----------------
 function showCreate() {
     document.getElementById("loginForm").classList.add("hidden");
     document.getElementById("createForm").classList.remove("hidden");
@@ -139,7 +136,7 @@ function showLogin() {
     document.getElementById("subtitle").innerText = "Login to continue";
 }
 
-// ---------------- ACCOUNT STORAGE ----------------
+// ---------------- STORAGE ----------------
 function getUsers() {
     return JSON.parse(localStorage.getItem("users") || "[]");
 }
@@ -148,14 +145,12 @@ function saveUsers(users) {
     localStorage.setItem("users", JSON.stringify(users));
 }
 
-// ---------------- PASSWORD RULES ----------------
+// ---------------- PASSWORD VALIDATION ----------------
 function validatePassword(pw) {
-    const minLength = pw.length >= 8;
-    const hasUpper = /[A-Z]/.test(pw);
-    const hasLower = /[a-z]/.test(pw);
-    const hasNumber = /[0-9]/.test(pw);
-
-    return minLength && hasUpper && hasLower && hasNumber;
+    return pw.length >= 8 &&
+           /[A-Z]/.test(pw) &&
+           /[a-z]/.test(pw) &&
+           /[0-9]/.test(pw);
 }
 
 // ---------------- CREATE ACCOUNT ----------------
@@ -184,7 +179,6 @@ function createAccount() {
 
     let users = getUsers();
 
-    // prevent duplicate usernames
     if (users.find(u => u.username === username || u.email === email)) {
         document.getElementById("error").innerText = "User already exists.";
         return;
@@ -224,8 +218,8 @@ function login() {
     // save session
     localStorage.setItem("currentUser", JSON.stringify(user));
 
-    // go to dashboard (we'll build next)
-    window.location.href = "admin.html";
+    // ✅ FIXED ROUTE — DASHBOARD
+    window.location.href = "dashboard.html";
 }
 
 </script>
