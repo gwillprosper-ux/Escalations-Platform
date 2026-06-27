@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Contractor Admin Panel</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+}
+
+header {
+    background: #13294B;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid orange;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px;
+    background: orange;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.contractor-list {
+    margin-top: 30px;
+}
+
+.card {
+    background: #f3f4f6;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>Contractor Admin Panel</h1>
+</header>
+
+<div class="container">
+
+<h2>Add Contractor</h2>
+
+<label>Company Name</label>
+<input id="company">
+
+<label>State</label>
+<input id="state">
+
+<label>Contact Name</label>
+<input id="contactName">
+
+<label>Phone Number</label>
+<input id="phone">
+
+<label>Email Address</label>
+<input id="email">
+
+<label>Ezee Leadership Contact Name</label>
+<input id="ezeeContact">
+
+<label>Ezee Leadership Email</label>
+<input id="ezeeEmail">
+
+<button onclick="saveContractor()">Save Contractor</button>
+
+<div class="contractor-list">
+<h2>Saved Contractors</h2>
+<div id="list"></div>
+</div>
+
+</div>
+
+<script>
+function getContractors() {
+    return JSON.parse(localStorage.getItem("contractors") || "[]");
+}
+
+function saveContractor() {
+    const contractor = {
+        company: document.getElementById("company").value,
+        state: document.getElementById("state").value,
+        contactName: document.getElementById("contactName").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        ezeeContact: document.getElementById("ezeeContact").value,
+        ezeeEmail: document.getElementById("ezeeEmail").value
+    };
+
+    let contractors = getContractors();
+    contractors.push(contractor);
+
+    localStorage.setItem("contractors", JSON.stringify(contractors));
+
+    renderList();
+    clearForm();
+}
+
+function renderList() {
+    let contractors = getContractors();
+    let html = "";
+
+    contractors.forEach(c => {
+        html += `
+        <div class="card">
+            <b>${c.company}</b> (${c.state})<br>
+            Contact: ${c.contactName}<br>
+            Phone: ${c.phone}<br>
+            Email: ${c.email}<br>
+            Ezee Contact: ${c.ezeeContact} (${c.ezeeEmail})
+        </div>`;
+    });
+
+    document.getElementById("list").innerHTML = html;
+}
+
+function clearForm() {
+    document.getElementById("company").value = "";
+    document.getElementById("state").value = "";
+    document.getElementById("contactName").value = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("ezeeContact").value = "";
+    document.getElementById("ezeeEmail").value = "";
+}
+
+renderList();
+</script>
+
+</body>
+</html>
