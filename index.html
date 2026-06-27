@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EZEE Contractor Tool Hub</title>
+<title>EZEE Support Hub - Login</title>
 
 <style>
 body {
@@ -12,47 +12,76 @@ body {
     font-family: Arial, sans-serif;
     background: #0f172a;
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-header {
-    background: #13294B;
-    padding: 25px;
-    text-align: center;
-    border-bottom: 4px solid orange;
-}
-
-.container {
-    max-width: 900px;
-    margin: 50px auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px;
-}
-
-.card {
+/* LOGIN BOX */
+.login-box {
     background: white;
     color: black;
-    padding: 25px;
+    width: 380px;
+    padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     text-align: center;
 }
 
+h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* BUTTON */
 button {
+    width: 100%;
+    padding: 12px;
     margin-top: 15px;
-    padding: 12px 20px;
-    border: none;
     background: orange;
-    color: #13294B;
+    border: none;
+    border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 8px;
-    font-size: 16px;
 }
 
 button:hover {
     background: #ffb347;
+}
+
+/* LINKS */
+.link {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #13294B;
+    cursor: pointer;
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
 }
 </style>
 
@@ -60,48 +89,145 @@ button:hover {
 
 <body>
 
-    <div style="
-    background:#13294B;
-    padding:12px;
-    display:flex;
-    gap:10px;
-    justify-content:center;
-    border-bottom:4px solid orange;
-">
-    <button onclick="location.href='index.html'">Home</button>
-    <button onclick="location.href='admin.html'">Admin</button>
-    <button onclick="location.href='email.html'">Email Tool</button>
+<div class="login-box">
+
+<h1>EZEE Fiber Support Hub</h1>
+<p id="subtitle">Login to continue</p>
+
+<!-- LOGIN FORM -->
+<div id="loginForm">
+
+    <input id="loginUser" placeholder="Username or Email">
+    <input id="loginPass" type="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <span class="link" onclick="showCreate()">Create New Account</span>
 </div>
 
-<header>
-    <h1>EZEE Fiber Contractor Hub</h1>
-    <p>Central Operations Console</p>
-</header>
+<!-- CREATE ACCOUNT -->
+<div id="createForm" class="hidden">
 
-<div class="container">
+    <input id="firstName" placeholder="First Name">
+    <input id="lastName" placeholder="Last Name">
+    <input id="email" placeholder="Email Address">
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password (8+ chars)">
+    <input id="confirmPassword" type="password" placeholder="Confirm Password">
 
-    <div class="card">
-        <h2>Contractor Administration</h2>
-        <p>Add, edit, and manage contractor contact information.</p>
-        <button onclick="goAdmin()">Open Admin Panel</button>
-    </div>
+    <button onclick="createAccount()">Create Account</button>
 
-    <div class="card">
-        <h2>Email Generator Tool</h2>
-        <p>Create Outlook-ready follow-up emails for contractors.</p>
-        <button onclick="goTool()">Open Email Tool</button>
-    </div>
+    <span class="link" onclick="showLogin()">Back to Login</span>
+
+    <div id="error" class="error"></div>
+</div>
 
 </div>
 
 <script>
-function goAdmin() {
+
+// ---------------- SWITCH VIEWS ----------------
+function showCreate() {
+    document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("createForm").classList.remove("hidden");
+    document.getElementById("subtitle").innerText = "Create your account";
+}
+
+function showLogin() {
+    document.getElementById("createForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+    document.getElementById("subtitle").innerText = "Login to continue";
+}
+
+// ---------------- ACCOUNT STORAGE ----------------
+function getUsers() {
+    return JSON.parse(localStorage.getItem("users") || "[]");
+}
+
+function saveUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+}
+
+// ---------------- PASSWORD RULES ----------------
+function validatePassword(pw) {
+    const minLength = pw.length >= 8;
+    const hasUpper = /[A-Z]/.test(pw);
+    const hasLower = /[a-z]/.test(pw);
+    const hasNumber = /[0-9]/.test(pw);
+
+    return minLength && hasUpper && hasLower && hasNumber;
+}
+
+// ---------------- CREATE ACCOUNT ----------------
+function createAccount() {
+    const first = document.getElementById("firstName").value;
+    const last = document.getElementById("lastName").value;
+    const email = document.getElementById("email").value;
+    const username = document.getElementById("username").value;
+    const pw = document.getElementById("password").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    let error = "";
+
+    if (!first || !last || !email || !username || !pw || !confirm) {
+        error = "All fields are required.";
+    } else if (!validatePassword(pw)) {
+        error = "Password must be 8+ chars, upper, lower, number.";
+    } else if (pw !== confirm) {
+        error = "Passwords do not match.";
+    }
+
+    if (error) {
+        document.getElementById("error").innerText = error;
+        return;
+    }
+
+    let users = getUsers();
+
+    // prevent duplicate usernames
+    if (users.find(u => u.username === username || u.email === email)) {
+        document.getElementById("error").innerText = "User already exists.";
+        return;
+    }
+
+    users.push({
+        first,
+        last,
+        email,
+        username,
+        password: pw,
+        role: "Representative"
+    });
+
+    saveUsers(users);
+
+    alert("Account created! Please log in.");
+    showLogin();
+}
+
+// ---------------- LOGIN ----------------
+function login() {
+    const input = document.getElementById("loginUser").value;
+    const pw = document.getElementById("loginPass").value;
+
+    let users = getUsers();
+
+    let user = users.find(u =>
+        (u.username === input || u.email === input) && u.password === pw
+    );
+
+    if (!user) {
+        alert("Invalid login.");
+        return;
+    }
+
+    // save session
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
+    // go to dashboard (we'll build next)
     window.location.href = "admin.html";
 }
 
-function goTool() {
-    alert("Email tool will be connected next step 🔧");
-}
 </script>
 
 </body>
