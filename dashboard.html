@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - EZEE Support Hub</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+}
+
+/* TOP BAR */
+.navbar {
+    background: #13294B;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid orange;
+}
+
+/* USER AREA */
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* CIRCLE */
+.user-circle {
+    background: orange;
+    color: #13294B;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* NAME */
+.user-name {
+    font-size: 14px;
+    color: white;
+    opacity: 0.9;
+}
+
+/* MAIN */
+.container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+.subtext {
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+/* CARDS */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    color: black;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px 20px;
+    border: none;
+    background: orange;
+    color: #13294B;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+button:hover {
+    background: #ffb347;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="navbar">
+
+    <div><b>EZEE Support Dashboard</b></div>
+
+    <div class="user-container">
+
+        <div class="user-name" id="userName">
+            Loading...
+        </div>
+
+        <div class="user-circle" onclick="logout()" id="userCircle">
+            U
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <h1>Welcome to your Dashboard</h1>
+    <div class="subtext" id="welcomeText">Loading user...</div>
+
+    <div class="grid">
+
+        <div class="card" onclick="goEmail()">
+            <h2>📧 Generate Email</h2>
+            <p>Create Outlook-ready contractor follow-ups</p>
+            <button>Open</button>
+        </div>
+
+        <div class="card" onclick="goVendor()">
+            <h2>🏗️ Add Vendor</h2>
+            <p>Add or manage contractor/vendor details</p>
+            <button>Open</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// GET USER
+const user = JSON.parse(localStorage.getItem("currentUser"));
+
+// REDIRECT IF NOT LOGGED IN
+if (!user) {
+    window.location.href = "index.html";
+}
+
+// FULL NAME DISPLAY (NEW REQUIREMENT)
+document.getElementById("userName").innerText =
+    user.first + " " + user.last;
+
+// INITIALS IN CIRCLE
+document.getElementById("userCircle").innerText =
+    user.first[0].toUpperCase() + user.last[0].toUpperCase();
+
+// WELCOME TEXT
+document.getElementById("welcomeText").innerText =
+    "Logged in as " + user.first + " " + user.last;
+
+// NAVIGATION
+function goEmail() {
+    alert("Email page coming next 🔧");
+}
+
+function goVendor() {
+    window.location.href = "admin.html";
+}
+
+function logout() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
